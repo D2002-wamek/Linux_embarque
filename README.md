@@ -32,65 +32,45 @@ La taille occupée est de 1.3GB sur les 3 GB de disponible.
 Des scripts sont fournis pour augmenter la taille du système de fichiers et profiter de l’ensemble de la carte SD : 
 Rebootons la carte (proprement !), puis, une fois loggé : Vérifions que nous avons bien 32GB de disponible sur la carte SD. 
 <img width="410" alt="image2" src="https://github.com/user-attachments/assets/7364e2f2-e305-4a06-9c83-ee04b16ec809" />
-
+<img width="548" alt="image3" src="https://github.com/user-attachments/assets/0a96e7d5-c184-4263-a757-1596147f90dc" />
 La carte ne dispose pas de 32 GB, ça taille est de 14 GB avec 12GB de disponible. 
-
 Pour être sûre de la taille de notre carte SD, nous avons exécuté la commande lsblk et nous avons bien la confirmation que la taille de la carte SD est de 14 GB. 
 
  
-
-1.3.3 Configuration réseau 
+# 1.3.3 Configuration réseau 
 
 — Branchons la carte VEEK sur le switch via un câble réseau, 
-
 — À l’aide de la commande ifconfig, vérifions que la carte dispose d’une adresse IP, 
-
- 
+<img width="552" alt="4" src="https://github.com/user-attachments/assets/9b4d746b-1040-49da-8745-16492eb6bb95" />
 
 — Éditons le fichier /etc/network/interfaces 
-
- 
+<img width="401" alt="5" src="https://github.com/user-attachments/assets/47510133-eb01-48a1-bdff-9e6fef9db9cc" />
 
 Rebootons  une nouvelle fois, et là normalement nous allons avoir une adresse IP correcte. Vérifions avec ifconfig. 
-
- 
+<img width="458" alt="6" src="https://github.com/user-attachments/assets/fc6dc512-ca6c-4291-b471-cd1cabe3693c" />
 
 — Si tout est correct, nous devons pouvoir pinger avec le PC dans les 2 sens 
-
- 
-
- 
+<img width="455" alt="7" src="https://github.com/user-attachments/assets/d69fd307-f909-46d8-89e7-1efd32577c3b" />
 
 — Vérifions que dans le fichier /etc/ssh/sshd_config, la ligne suivante est présente : 
+<img width="473" alt="8" src="https://github.com/user-attachments/assets/c89993d9-8db8-4ac7-9de7-e34d9184c4cf" />
 
- 
+— Nous pouvons nous logger en ssh sur la carte VEEK, avec Putty ou par le terminal : 
+<img width="545" alt="9" src="https://github.com/user-attachments/assets/9df1cd0f-7818-4a2c-8eb9-476a6c1ca2c6" />
 
- 
-
- 
-
-— Nous devrions pouvoir nous logger en ssh sur la carte VEEK, avec Putty ou par le terminal : 
-
- 
-
-1.4 Découverte de la cible  
-
-1.4.1 Exploration des dossiers /sys/class et /proc 
-
-1.4.2 Compilation croisée 
+# 1.4 Découverte de la cible  
+# 1.4.1 Exploration des dossiers /sys/class et /proc 
+# 1.4.2 Compilation croisée 
 
 Il existe deux méthodes pour compiler un programme sur le SoC . 
 
-1.4.3 Hello world ! 
-
+# 1.4.3 Hello world ! 
 Réalisons un programme "Hello World !", compilons-le et testons-le sur la carte SoC. 
 
 — Pour compiler sur la VM, utilisons le cross-compilateur 
+<img width="547" alt="10" src="https://github.com/user-attachments/assets/acf69e4b-50dc-473a-aca5-dde24c238149" />
 
- 
-
-Nous pouvons vérifier le type de vos exécutables avec la commande file. Essayons de l’exécuter dans la VM. Que se passe-t-il ? 
-
+Nous pouvons vérifier le type de nos exécutables avec la commande file. 
 Il ne se passe rien car le fichier hello.o a été créé spécialement pour le SoC et le terminale ne peut pas le lire. 
 
  
