@@ -70,74 +70,72 @@ Réalisons un programme "Hello World !", compilons-le et testons-le sur la carte
 — Pour compiler sur la VM, utilisons le cross-compilateur 
 <img width="547" alt="10" src="https://github.com/user-attachments/assets/acf69e4b-50dc-473a-aca5-dde24c238149" />
 
-Nous pouvons vérifier le type de nos exécutables avec la commande file. 
+Nous pouvons vérifier le type de nos exécutables avec la commande file. lorsque nous de l’exécutons dans la VM
 Il ne se passe rien car le fichier hello.o a été créé spécialement pour le SoC et le terminale ne peut pas le lire. 
-
- 
+<img width="527" alt="11" src="https://github.com/user-attachments/assets/9db874d3-b02d-4967-b28c-8e0c44d5bd42" />
 
 Comme la carte SOC est sur le réseau, nous pouvons copier l’exécutable directement sur la cible : 
-
- 
-
+<img width="546" alt="12" src="https://github.com/user-attachments/assets/615094f0-81ab-468a-afae-b55a2c2f15da" />
 Quand on teste sur la carte, on observe bien le message “hello world”. 
+<img width="550" alt="13" src="https://github.com/user-attachments/assets/1b9d22f1-2f43-43f6-97db-df0ccff8054b" />
 
- 
-
-1.4.4 Accès au matériel 
-
+ # 1.4.4 Accès au matériel 
 Testons d’allumer et d’éteindre d’autres LED. 
+<img width="549" alt="14" src="https://github.com/user-attachments/assets/43ccdb9f-a708-409b-b4b5-54eb563f6a12" />
 
- 
-
- 
-
-1.4.5 Chenillard (Et oui, encore !) 
+# 1.4.5 Chenillard (Et oui, encore !) 
 
 Le chénillard fonctionne bien.  
 
-#include <stdio.h> #include <stdlib.h> // Pour system() 
+| Code                                                   |
+| ------------------------------------------------------ |
+| `#include <stdio.h>`                                   |
+| `#include <stdlib.h> // Pour system()`                 |
+| `#ifdef _WIN32`                                        |
+| `#include <windows.h> // Pour Sleep()`                 |
+| `#else`                                                |
+| `#include <unistd.h>  // Pour usleep() sur Unix/Linux` |
+| `#endif`                                               |
+| `#include <fcntl.h>`                                   |
+| `#include <string.h>`                                  |
+| `#define NUM_LEDS 9  // Adapté à 9 LEDs`               |
+| `const char *led_paths[NUM_LEDS] = {`                  |
+| `" /sys/class/leds/fpga_led0/brightness",`             |
+| `" /sys/class/leds/fpga_led1/brightness",`             |
+| `" /sys/class/leds/fpga_led2/brightness",`             |
+| `" /sys/class/leds/fpga_led3/brightness",`             |
+| `" /sys/class/leds/fpga_led4/brightness",`             |
+| `" /sys/class/leds/fpga_led5/brightness",`             |
+| `" /sys/class/leds/fpga_led6/brightness",`             |
+| `" /sys/class/leds/fpga_led7/brightness",`             |
+| `" /sys/class/leds/fpga_led8/brightness"`              |
+| `};`                                                   |
+| `// Allumer ou éteindre une LED`                       |
+| `void set_led(int index, int state) {`                 |
+| `int fd = open(led_paths[index], O_WRONLY);`           |
+| `if (fd < 0) {`                                        |
+| `perror("Erreur ouverture LED");`                      |
+| `return;`                                              |
+| `}`                                                    |
+| `const char *value = state ? "1" : "0";`               |
+| `if (write(fd, value, strlen(value)) < 0) {`           |
+| `perror("Erreur écriture LED");`                       |
+| `}`                                                    |
+| `close(fd);`                                           |
+| `}`                                                    |
+| `int main() {`                                         |
+| `int position = 0;`                                    |
+| `while (1) {`                                          |
+| `for (int i = 0; i < NUM_LEDS; i++) {`                 |
+| `set_led(i, 0);`                                       |
+| `}`                                                    |
+| `set_led(position, 1);`                                |
+| `position = (position + 1) % NUM_LEDS;`                |
+| `usleep(200000); // Pause de 200 ms`                   |
+| `}`                                                    |
+| `return 0;`                                            |
+| `}`                                                    |
 
-#ifdef _WIN32 #include <windows.h> // Pour Sleep() #else #include <unistd.h> // Pour usleep() sur Unix/Linux #endif 
-
-#include <fcntl.h> #include <string.h> 
-
-#define NUM_LEDS 9 // Adapté à 9 LEDs 
-
-const char *led_paths[NUM_LEDS] = { "/sys/class/leds/fpga_led0/brightness", "/sys/class/leds/fpga_led1/brightness", "/sys/class/leds/fpga_led2/brightness", "/sys/class/leds/fpga_led3/brightness", "/sys/class/leds/fpga_led4/brightness", "/sys/class/leds/fpga_led5/brightness", "/sys/class/leds/fpga_led6/brightness", "/sys/class/leds/fpga_led7/brightness", "/sys/class/leds/fpga_led8/brightness" }; 
-
-// Allumer ou éteindre une LED void set_led(int index, int state) { int fd = open(led_paths[index], O_WRONLY); if (fd < 0) { perror("Erreur ouverture LED"); return; } 
-
-const char *value = state ? "1" : "0"; 
-if (write(fd, value, strlen(value)) < 0) { 
-    perror("Erreur écriture LED"); 
-} 
- 
-close(fd); 
-  
-
-} 
-
-int main() { int position = 0; 
-
-while (1) { 
-    // Éteindre toutes les LEDs 
-    for (int i = 0; i < NUM_LEDS; i++) { 
-        set_led(i, 0); 
-    } 
- 
-    // Allumer la LED courante 
-    set_led(position, 1); 
- 
-    // Avancer à la LED suivante 
-    position = (position + 1) % NUM_LEDS; 
- 
-    usleep(200000); // Pause de 200 ms 
-} 
- 
-return 0; 
-  
-
-} 
 
 2 Modules kernel (TP2) 
 
