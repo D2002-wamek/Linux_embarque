@@ -257,7 +257,15 @@ Vérifions que le module fonctionne bien avec la commande dmesg.
 
 On veut créer un chenillard dont on peut modifier : 
 
- 
+
+NB:Vous ne pouvez pas visualiser les fichiers suivants car nous avons fait un make clean pour pouvoir refaire la procedure avec chenillard.c :
+module_simple.ko
+module_simple.o
+module_simple.mod.c
+module_simple.mod.o
+Module.symvers
+modules.order
+
 
   
 
