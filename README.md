@@ -13,6 +13,9 @@ Sous Windows : Utilisons le logiciel PuTTy pour nous connecter grace au port sé
 
 Quelle est la taille occupée ? 
 La taille occupée est de 1.3GB sur les 3 GB de disponible. 
+<img width="446" alt="Capture1" src="https://github.com/user-attachments/assets/1e6b434d-9f42-4e8d-af0b-acb6d46d0cf6" />
+
+
 Des scripts sont fournis pour augmenter la taille du système de fichiers et profiter de l’ensemble de la carte SD. (voir image dans le compte rendu pdf)
 
 Rebootons la carte (proprement !), puis, une fois loggé : Vérifions que nous avons bien 32GB de disponible sur la carte SD. 
