@@ -137,15 +137,15 @@ Le chénillard fonctionne bien.
 | `}`                                                    |
 
 
-2 Modules kernel (TP2) 
+# 2 Modules kernel (TP2) 
 
-2.0 Reprise du TP1 
+# 2.0 Reprise du TP1 
 
 Assurons-nous de pouvoir communiquer avec la carte VEEK en ssh ou via le port série. Nous devons pour cela reprendre la configuration du réseau faite au TP1. 
 
  
 
-2.1 Accès aux registres 
+# 2.1 Accès aux registres 
 
 Avant de travailler avec les modules, nous allons créer un programme qui accède directement aux registres depuis l’espace utilisateur. À cause de la virtualisation de la mémoire, il n’est pas possible d’écrire facilement dans un registre comme nous en avons l’habitude. Il faut en effet remapper la mémoire pour demander à l’OS de nous fournir une adresse virtuelle. 
 
@@ -197,7 +197,7 @@ Planter un périphérique.
 
  
 
-2.2 Compilation de module noyau sur la VM  
+# 2.2 Compilation de module noyau sur la VM  
 
 Pour ce TP, nous allons développer nos propres modules noyau. Nous allons avoir besoin des sources du noyau cible (en fait en théorie il faut seulement les includes). Il nous faut les sources exactes du noyau sur lequel le module va être chargé. 
 
@@ -205,95 +205,55 @@ Pour ce TP, nous allons développer nos propres modules noyau. Nous allons avoir
 
 Nous avons fait :  
 
-Ls 
+--> Ls 
+--> Cd src 
+--> Ls 
+--> Make 
+--> Ls 
+--> Sudo insmod module_simple.ko : il n’affiche rien 
+--> Sudo dmesg (avant) : affiche le message 
+<img width="548" alt="15" src="https://github.com/user-attachments/assets/59abab43-88a2-4dff-9d77-3c3e3c379093" />
+--> Sudo rmmod module_simple : supprime module_simple du noyau 
+<img width="550" alt="16" src="https://github.com/user-attachments/assets/24582c38-f397-4cff-85d1-35d9b64f1caf" />
+--> Sudo dmesg (après) : pour vérifier que l’on est bien sortie du noyau 
+<img width="545" alt="17" src="https://github.com/user-attachments/assets/66518d63-5f27-4f22-86e5-d09a19398a93" />
+--> lsmod 
+<img width="385" alt="18" src="https://github.com/user-attachments/assets/1283929d-5156-4208-bcab-dee7b109ff64" />
 
-Cd src 
-
-Ls 
-
-Make 
-
-Ls 
-
-Sudo insmod module_simple.ko : il n’affiche rien 
-
-Sudo dmesg (avant) : affiche le message 
-
- 
-
-Sudo rmmod module_simple : supprime module_simple du noyau 
-
- 
-
-Sudo dmesg (après) : pour vérifier que l’on est bien sortie du noyau 
-
- 
-
-lsmod 
-
- 
-
-  
-
- 2.3 CrossCompilation de modules noyau  
+ # 2.3 CrossCompilation de modules noyau  
 
 À cause de la puissance limitée du processeur de la carte cible, la compilation, en particulier la compilation de modules noyau, est relativement longue. Nous allons donc, une fois encore, cross-compiler les modules noyau pour la carte SoC, à l’aide de la VM. 
 
- 
-
-2.3.1 Préparation de la compilation 
-
+# 2.3.1 Préparation de la compilation 
 Notez le chemin vers ces compilateurs : whereis arm-linux-gnueabihf-gcc 
+<img width="559" alt="19" src="https://github.com/user-attachments/assets/22709100-d177-4c4e-a833-0504f3e83c26" />
 
- 
-
-2.3.2 Récupération de la configuration actuelle du noyau 
-
+# 2.3.2 Récupération de la configuration actuelle du noyau 
 Sur la carte SoC, récupérez le contenu du fichier /proc/config.gz dans le dossier des sources du noyau. Décompressez ce fichier dans le dossier ~/linux-socfpga/ et renommez-le en .config. 
-
 Le <chemin_arm-linux-gnueabihf> est le chemin noté plus haut sans le gcc 
-
 final. Par exemple : /usr/bin/arm-linux-gnueabihf- 
 
 — Quel est le rôle des lignes commençant par export ? 
-
 Ces lignes définissent des variables d’environnement que la commande make utilise pour faire de la compilation croisée du noyau ou des modules. 
 
- 
-
 — Pourquoi le chemin fini par un tiret "-" ? 
-
 CROSS_COMPILE est un préfixe utilisé par make pour retrouver automatiquement les bons outils. Lorsqu’on écrit : CROSS_COMPILE=/usr/bin/arm-linux-gnueabihf- 
 
 alors make cherchera automatiquement les outils comme : 
-
 /usr/bin/arm-linux-gnueabihf-gcc → le compilateur 
-
 /usr/bin/arm-linux-gnueabihf-ld → l'éditeur de liens 
-
 /usr/bin/arm-linux-gnueabihf-as → l'assembleur 
 
 Le tiret - final fait donc partie du nom standard du préfixe des outils croisés. 
 
  
 
-2.3.3 Hello World 
-
+# 2.3.3 Hello World 
 Nous allons refaire les exercices précédents (Module, timers...) sur la plateforme VEEK. 
+Vérifions que le module fonctionne bien avec la commande dmesg. 
+<img width="551" alt="20" src="https://github.com/user-attachments/assets/d20f4c1f-afe2-456e-8fb4-e9c0f55433f0" />
 
- Vérifions que le module fonctionne bien avec la commande dmesg. 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-2.3.4 Chenillard 
+# 2.3.4 Chenillard 
 
 On veut créer un chenillard dont on peut modifier : 
 
